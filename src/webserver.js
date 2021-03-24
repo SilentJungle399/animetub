@@ -57,6 +57,25 @@ async function mainpage() {
 		recent: recentlist
 	}
 }
+async function searchpage(query) {
+	query = query.replace(/ +/g, "%20")
+	const page = await text(`https://gogoanime.ai//search.html?keyword=${query}`)
+	let results = page.match(/<ul class="items">(.*?)<\/ul>/i)[1]
+	results = results.match(/<li>(.*?)<\/li>/g) 
+	const ret = []
+	for (i of results) {
+		const stuff = i.match(/(.*?)\/category\/(.*?)" title="(.*?)"> <img src="(.*?)"(.*?)"released"> (.*?) <\/p>/i)
+		console.log(stuff)
+		ret.push({
+			name: stuff[2],
+			key: stuff[3],
+			pic: stuff[4],
+			release: stuff[6]
+		})
+	}
+	
+	return ret
+}
 
 io.on("connection", (socket) => {
 	console.log("Client connected!")
@@ -78,6 +97,21 @@ io.on("connection", (socket) => {
 	})
 	socket.on("getHomePage", async (data) => {
 		socket.emit("homePage", await mainpage())
+	})
+	socket.on("searchAnime", async (data) => {
+		try {
+			const retdata = {
+				found: true,
+				results: await searchpage(data.query)
+			}
+			socket.emit("animeSearchResult", retdata)
+		} catch (err) {
+			console.log(err)
+			const retdata = {
+				found: false
+			}
+			socket.emit("animeSearchResult", retdata)
+		}
 	})
 })
 
