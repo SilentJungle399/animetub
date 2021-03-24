@@ -1,6 +1,7 @@
 <template>
 	<div id="notif" class="notification">
 		<span class="message">{{ msg }}</span>
+        <!-- <span class="message">asasasa</span> -->
 	</div>
 </template>
 
@@ -19,7 +20,6 @@ export default {
 .notification {
 	position: absolute;
     z-index: 1;
-	visibility: hidden;
     min-width: 300px;
     max-width: 500px;
     right: 10px;
@@ -40,5 +40,11 @@ export default {
 
 .message {
     white-space: initial;
+    position: initial;
+    height: 0;
+    margin-left: 0;
+    line-height: 0;
+    font-weight: normal;
+    font-size: initial;
 }
 </style>
