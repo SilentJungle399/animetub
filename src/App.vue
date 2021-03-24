@@ -5,13 +5,13 @@
 			<Notification :msg="notif"></Notification>
 			<div class="titlebar">
 				<div class="animesearchinputdiv">
-					<input spellcheck="false" placeholder="Search for anime" v-model="animesearch" type="text" class="animesearch">
+					<input spellcheck="false" placeholder="Search for anime" v-model="animesearch" type="text" class="animesearch" @keypress.enter="searchAnime">
 					<div @click="clearinput('animesearch')" v-show="animesearch" class="cancelicondiv">
 						<fontAws v-show="animesearch" class="animesearchcancelicon" icon="times"></fontAws>
 					</div>
 				</div>
 			</div>
-			<router-view></router-view>
+			<router-view :searchres="searchresult"></router-view>
 		</div>
 		<div v-else class="unsupported">
 			<h3>Unfortunately, your device is not supported for the webapp.</h3>
@@ -31,27 +31,44 @@ export default {
 	data() {
 		return {
 			notif: null,
+			curnotif: null,
 			unsupported: false,
-			animesearch: null
+			animesearch: null,
+			searchresult: null
 		}
 	},
 	methods: {
+		searchAnime() {
+			if (!this.animesearch) {
+				this.makealert("Please enter anime name to search for!")
+			} else {
+				progress.start('load')
+				this.makealert(`Searching for: ${this.animesearch}`)
+				this.$socket.emit("searchAnime", {
+					query: this.animesearch
+				})
+				if (this.$route.path !== "/search") {
+					this.$router.push({
+						path: "/search"
+					})
+				}
+			}
+		},
 		clearinput(field) {
 			if (field === "animesearch") {
 				this.animesearch = null
 			}
 		},
 		makealert(msg) {
+			if (this.curnotif) {
+				clearTimeout(this.curnotif)
+				this.curnotif = null
+			}
 			this.notif = msg
-			document.getElementById("notif").style.visibility = "visible"
 			document.getElementById("notif").style.opacity = 1
 			const comp = this;
-			setTimeout(function() {
+			this.curnotif = setTimeout(function() {
 				document.getElementById("notif").style.opacity = 0
-				setTimeout(function() {
-					document.getElementById("notif").style.visibility = "hidden"
-					comp.notif = null
-				}, 500)
 			}, 2500)
 		},
 		checksize() {
@@ -72,6 +89,24 @@ export default {
 				this.unsupported = true
 				progress.done()
 			}
+	},
+	sockets: {
+		animeSearchResult(data) {
+			if (data.found) {
+				this.searchresult = data
+			} else {
+				this.searchresult = false
+			}
+			progress.done()
+			console.log(data)
+		}
+	},
+	watch: {
+		animesearch (after, before) {
+			if (!before) {
+				this.makealert("Press enter after typing the query to initiate the search!")
+			}
+		}
 	},
 	created() {
 		window.addEventListener("resize", this.checksize);
@@ -141,6 +176,10 @@ body {
 	border-style: solid;
 	border-color: #151516;
 	transition: border 0.5s;
+}
+
+.searcharea {
+	display: flex;
 }
 
 .progressing {
