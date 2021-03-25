@@ -65,10 +65,9 @@ async function searchpage(query) {
 	const ret = []
 	for (i of results) {
 		const stuff = i.match(/(.*?)\/category\/(.*?)" title="(.*?)"> <img src="(.*?)"(.*?)"released"> (.*?) <\/p>/i)
-		console.log(stuff)
 		ret.push({
-			name: stuff[2],
-			key: stuff[3],
+			name: stuff[3],
+			key: stuff[2],
 			pic: stuff[4],
 			release: stuff[6]
 		})
