@@ -65,10 +65,12 @@ export default {
 				this.curnotif = null
 			}
 			this.notif = msg
+			document.getElementById("notif").style.zIndex = 1
 			document.getElementById("notif").style.opacity = 1
 			const comp = this;
 			this.curnotif = setTimeout(function() {
 				document.getElementById("notif").style.opacity = 0
+				document.getElementById("notif").style.zIndex = 0
 			}, 2500)
 		},
 		checksize() {
@@ -93,7 +95,7 @@ export default {
 	sockets: {
 		animeSearchResult(data) {
 			if (data.found) {
-				this.searchresult = data
+				this.searchresult = data.results
 			} else {
 				this.searchresult = false
 			}
