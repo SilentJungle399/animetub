@@ -12,7 +12,7 @@
 
 <script>
 import progress from '@/handlers/progress.js';
-import Preview from '@/components/utils/Preview.vue'
+import Preview from '@/components/PlayerPage/Preview.vue'
 
 export default {
 	name: "EpisodeSection",
