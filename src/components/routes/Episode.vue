@@ -18,11 +18,6 @@ import EpisodesSection from "@/components/PlayerPage/EpisodesSection.vue";
 
 export default {
 	name: "Episode",
-	props: {
-		searchres: {
-			required: true
-		}
-	},
 	components: {
 		PlayerSection,
 		EpisodesSection
