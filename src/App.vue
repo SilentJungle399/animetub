@@ -11,7 +11,7 @@
 					</div>
 				</div>
 			</div>
-			<router-view :searchres="searchresult"></router-view>
+			<router-view :searchitem="cursearch" :searchres="searchresult"></router-view>
 		</div>
 		<div v-else class="unsupported">
 			<h3>Unfortunately, your device is not supported for the webapp.</h3>
@@ -34,6 +34,7 @@ export default {
 			curnotif: null,
 			unsupported: false,
 			animesearch: null,
+			cursearch: null,
 			searchresult: null
 		}
 	},
@@ -43,6 +44,7 @@ export default {
 				this.makealert("Please enter anime name to search for!")
 			} else {
 				progress.start('load')
+				this.cursearch = this.animesearch
 				this.makealert(`Searching for: ${this.animesearch}`)
 				this.$socket.emit("searchAnime", {
 					query: this.animesearch
@@ -91,6 +93,10 @@ export default {
 				this.unsupported = true
 				progress.done()
 			}
+
+			if (this.$route.fullPath === "/") {
+				progress.done()
+			}
 	},
 	sockets: {
 		animeSearchResult(data) {
@@ -100,7 +106,6 @@ export default {
 				this.searchresult = false
 			}
 			progress.done()
-			console.log(data)
 		}
 	},
 	watch: {
