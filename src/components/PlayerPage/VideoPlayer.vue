@@ -29,7 +29,7 @@ export default {
 	methods: {
 		timeupdate(event) {
 			if (this.$refs.video) {
-				window.localStorage.setItem(`${this.$route.params.anime}<|>${this.$route.params.episode}`, this.$refs.video.currentTime)
+				window.localStorage.setItem(`${this.$route.params.anime}<|>${this.$route.params.episode}`, `${this.$refs.video.currentTime}<|>${Date.now()}`)
 			}
 		},
 		notify(notif) {
@@ -55,8 +55,9 @@ export default {
 			if (player) {
 				player.addEventListener("timeupdate", this.timeupdate)
 				player.addEventListener("waiting", this.vidWaiting)
-				const currentTime = window.localStorage.getItem(`${this.$route.params.anime}<|>${this.$route.params.episode}`)
-				if (currentTime) {
+				const playerTime = window.localStorage.getItem(`${this.$route.params.anime}<|>${this.$route.params.episode}`)
+				if (playerTime) {
+					const currentTime = parseInt(playerTime.split("<|>")[0])
 					player.currentTime = currentTime > 5 ? currentTime - 5 : 0
 				}
 
