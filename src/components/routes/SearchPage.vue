@@ -4,7 +4,7 @@
 			Type the anime name in the input above and click enter to see the results.
 		</div>
 		<div v-else-if="searchres === false">
-			No results found for: {{ searchres }}
+			No results found for: {{ searchitem }}
 		</div>
 		<div class="searchresults" v-else> 
 			<div :key="res.key" v-for="res in searchres">
@@ -26,6 +26,9 @@ export default {
 	},
 	props: {
 		searchres: {
+			required: true
+		},
+		searchitem: {
 			required: true
 		}
 	},
@@ -49,13 +52,13 @@ export default {
 .resultsarea {
 	display: flex;
     justify-content: center;
-    width: 60%;
+    width: 80%;
     margin: 120px auto 0 auto;
 }
 
 .searchresults {
 	display: grid;
-	grid-template-columns: auto auto auto auto auto;
+	grid-template-columns: repeat(5, minmax(0, 200px));
 	/* flex-wrap: wrap; */
 }
 </style>
