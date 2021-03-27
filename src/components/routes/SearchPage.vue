@@ -1,6 +1,9 @@
 <template>
 	<div class="resultsarea">
-		<div v-if="searchres === null">
+		<div v-if="searchitem && searchres === null">
+			Searching for {{ searchitem }}...
+		</div>
+		<div v-else-if="searchres === null">
 			Type the anime name in the input above and click enter to see the results.
 		</div>
 		<div v-else-if="searchres === false">
