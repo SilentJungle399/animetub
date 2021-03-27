@@ -75,6 +75,33 @@ async function searchpage(query) {
 	
 	return ret
 }
+async function getTotalEp(page) {
+	let res = page.match(/ep_end = '(.*?)'/g)
+	let req = parseInt(res[res.length - 1].match(/ep_end = '(.*?)'/i)[1])
+	return req
+}
+async function extGenre(data) {
+	const matches = data.match(/<a (.*?)>(.*?)<\/a>/ig)
+	const ret = []
+	for (const i in matches) {
+		ret.push(matches[i].match(/<a (.*?)>(.*?)<\/a>/i)[2].replace(/ +/g, "").replace(/,/g, ""))
+	}
+	return ret
+}
+async function getAnimeInfo(anime) {
+	const page = await text(`https://gogoanime.ai/category/${anime}`)
+	const rawData = page.match(/<div class="anime_info_body_bg">(.*?)<img src="https:\/\/gogocdn\.net(.*?)">(.*?)<h1>(.*?)<\/h1>(.*?)<p class="type">(.*?)<span>Plot Summary: <\/span>(.*?)<\/p>(.*?)<p class="type"><span>Genre: <\/span>(.*?)<\/p>(.*?)<p class="type"><span>Released: <\/span>(.*?)<\/p>(.*?)<p class="type"><span>Status: <\/span> <a href="\/ongoing-anime\.html" title="Ongoing Anime">Ongoing<\/a> <\/p>/i)
+	const totalEps = await getTotalEp(page)
+	const genres = await extGenre(rawData[9].trim(" "))
+	return {
+		name: rawData[4],
+		pic: `https://gogocdn.net${rawData[2]}`,
+		genres: genres,
+		totalEp: totalEps,
+		description: rawData[7],
+		released: rawData[11]
+	}
+}
 
 io.on("connection", (socket) => {
 	console.log("Client connected!")
@@ -111,6 +138,9 @@ io.on("connection", (socket) => {
 			}
 			socket.emit("animeSearchResult", retdata)
 		}
+	})
+	socket.on("getAnimeData", async (data) => {
+		socket.emit("retAnimeData", await getAnimeInfo(data.name))
 	})
 })
 
