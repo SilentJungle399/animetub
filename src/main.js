@@ -7,10 +7,11 @@ import NProgress from 'nprogress';
 
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { library } from '@fortawesome/fontawesome-svg-core'
-import { faTimes } from '@fortawesome/free-solid-svg-icons'
+import { faTimes, faPlay } from '@fortawesome/free-solid-svg-icons'
 //import { faTimesCircle } from '@fortawesome/free-regular-svg-icons'
 
 library.add(faTimes)
+library.add(faPlay)
 
 Vue.component('fontAws', FontAwesomeIcon)
 
