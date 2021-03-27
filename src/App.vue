@@ -11,7 +11,7 @@
 					</div>
 				</div>
 			</div>
-			<router-view :searchitem="cursearch" :searchres="searchresult"></router-view>
+			<router-view @alert="makealert" :searchitem="cursearch" :searchres="searchresult"></router-view>
 		</div>
 		<div v-else class="unsupported">
 			<h3>Unfortunately, your device is not supported for the webapp.</h3>
