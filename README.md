@@ -11,4 +11,4 @@
 
 ### Routing
 - This webapp uses [Vue router](https://router.vuejs.org/) in history mode so every single routes in production build must go through index.html
-- You can use [this](https://www.npmjs.com/package/connect-history-api-fallback) npm package to achieve that.
+- You can use [this npm package](https://www.npmjs.com/package/connect-history-api-fallback) to achieve that.
